@@ -52,11 +52,11 @@ const pixaby = new Pixabay();
         } finally {}
       }
     });
-  };
+};
   
-  const observer = new IntersectionObserver(loadMorePhotos, options);
+const observer = new IntersectionObserver(loadMorePhotos, options);
   
-  const onSubmitClick = async event => {
+const onSubmitClick = async event => {
     event.preventDefault();
   
     const {
@@ -109,9 +109,9 @@ const pixaby = new Pixabay();
     } finally {
       
     }
-  };
+};
   
-  const onLoadMore = async () => {
+const onLoadMore = async () => {
     pixaby.incrementPage();
   
     if (!pixaby.hasMorePhotos) {
@@ -129,19 +129,19 @@ const pixaby = new Pixabay();
   
       clearPage();
     }
-  };
+};
   
-  function clearPage() {
+function clearPage() {
     pixaby.resetPage();
     refs.gallery.innerHTML = '';
     refs.btnLoadMore.classList.add('is-hidden');
-  }
+}
   
-  refs.form.addEventListener('submit', onSubmitClick);
-  refs.btnLoadMore.addEventListener('click', onLoadMore);
+refs.form.addEventListener('submit', onSubmitClick);
+refs.btnLoadMore.addEventListener('click', onLoadMore);
   
   //  smooth scrolling
-  function scrollPage() {
+function scrollPage() {
     const { height: cardHeight } = document
       .querySelector('.gallery')
       .firstElementChild.getBoundingClientRect();
@@ -150,19 +150,19 @@ const pixaby = new Pixabay();
       top: cardHeight * 2,
       behavior: 'smooth',
     });
-  }
+}
   
   //Button smooth scroll up
   
-  window.addEventListener('scroll', scrollFunction);
+window.addEventListener('scroll', scrollFunction);
   
-  function scrollFunction() {
+function scrollFunction() {
     if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
       refs.btnUpWrapper.style.display = 'flex';
     } else {
       refs.btnUpWrapper.style.display = 'none';
     }
-  }
+}
   refs.btnUp.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+});
