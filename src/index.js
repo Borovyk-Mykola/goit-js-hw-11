@@ -31,24 +31,24 @@ const pixaby = new Pixabay();
     entries.forEach(async entry => {
       if (entry.isIntersecting) {
         observer.unobserve(entry.target);
-        pixaby.incrementPage();
+        pixaby.page += 1;
   
         try {
           const { hits } = await pixaby.getPhotos();
           const markup = createCard(hits);
           refs.gallery.insertAdjacentHTML('beforeend', markup);
   
-          if (pixaby.hasMorePhotos) {
+          if (pixaby.hasMorePhotos()) {
             const lastItem = document.querySelector('.gallery a:last-child');
             observer.observe(lastItem);
           } else
           Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
   
             modalSimpleLightbox.refresh();
-          scrollPage();
+            scrollPage();
         } catch (error) {
             Notiflix.Notify.failure(error.message, 'Something went wrong!');
-          clearPage();
+            clearPage();
         } finally {}
       }
     });
@@ -56,66 +56,56 @@ const pixaby = new Pixabay();
   
 const observer = new IntersectionObserver(loadMorePhotos, options);
   
-const onSubmitClick = async event => {
-    event.preventDefault();
+const onSubmitClick = async e => {
+    e.preventDefault();
   
     const {
       elements: { searchQuery },
-    } = event.target;
+    } = e.target;
   
     const search_query = searchQuery.value.trim().toLowerCase();
   
     if (!search_query) {
       clearPage();
-      Notiflix.Notify.info('Enter data to search!');
-  
-      refs.searchInput.placeholder = 'What`re we looking for?';
+      Notiflix.Notify.info('Enter valid text to search!');
       return;
     }
   
     pixaby.query = search_query;
-  
     clearPage();
   
     try {
-      
       const { hits, total } = await pixaby.getPhotos();
   
       if (hits.length === 0) {
         Notiflix.Notify.failure(
           `Sorry, there are no images matching your ${search_query}. Please try again.`);
         return;
-      }
+      };
   
       const markup = createCard(hits);
       refs.gallery.insertAdjacentHTML('beforeend', markup);
   
-      pixaby.setTotal(total);
+      pixaby.totalPages = total;
       Notiflix.Notify.success(`Hooray! We found ${total} images.`);
   
-      if (pixaby.hasMorePhotos) {
-        //refs.btnLoadMore.classList.remove('is-hidden');
-  
+      if (pixaby.hasMorePhotos()) {
         const lastItem = document.querySelector('.gallery a:last-child');
         observer.observe(lastItem);
       }
   
       modalSimpleLightbox.refresh();
-      // scrollPage();
+      
     } catch (error) {
         Notiflix.Notify.failure(error.message, 'Something went wrong!');
-  
-      clearPage();
-    } finally {
-      
-    }
+        clearPage();
+    } 
 };
   
 const onLoadMore = async () => {
-    pixaby.incrementPage();
+    pixaby.page += 1;
   
-    if (!pixaby.hasMorePhotos) {
-      refs.btnLoadMore.classList.add('is-hidden');
+    if (!pixaby.hasMorePhotos()) {
       Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
     }
     try {
@@ -123,24 +113,20 @@ const onLoadMore = async () => {
       const markup = createCard(hits);
       refs.gallery.insertAdjacentHTML('beforeend', markup);
   
-      modalLightboxGallery.refresh();
+      modalSimpleLightbox.refresh();
     } catch (error) {
         Notiflix.Notify.failure(error.message, 'Something went wrong!');
-  
-      clearPage();
+        clearPage();
     }
 };
   
 function clearPage() {
-    pixaby.resetPage();
     refs.gallery.innerHTML = '';
-    refs.btnLoadMore.classList.add('is-hidden');
 }
   
 refs.form.addEventListener('submit', onSubmitClick);
 refs.btnLoadMore.addEventListener('click', onLoadMore);
   
-  //  smooth scrolling
 function scrollPage() {
     const { height: cardHeight } = document
       .querySelector('.gallery')
@@ -151,18 +137,3 @@ function scrollPage() {
       behavior: 'smooth',
     });
 }
-  
-  //Button smooth scroll up
-  
-window.addEventListener('scroll', scrollFunction);
-  
-function scrollFunction() {
-    if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
-      refs.btnUpWrapper.style.display = 'flex';
-    } else {
-      refs.btnUpWrapper.style.display = 'none';
-    }
-}
-  refs.btnUp.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
