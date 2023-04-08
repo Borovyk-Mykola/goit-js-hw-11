@@ -17,8 +17,6 @@ const refs = {
 const modalSimpleLightbox = new SimpleLightbox('.gallery a', {
     captionDelay: 250,
 });
-
-console.log('All resources finished loading!');
   
 refs.btnLoadMore.classList.add('is-hidden');
   
@@ -145,7 +143,7 @@ const pixaby = new Pixabay();
   //  smooth scrolling
   function scrollPage() {
     const { height: cardHeight } = document
-      .querySelector('.photo-gallery')
+      .querySelector('.gallery')
       .firstElementChild.getBoundingClientRect();
   
     window.scrollBy({

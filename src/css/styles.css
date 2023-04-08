@@ -30,3 +30,12 @@ body {
   opacity: 0;
   pointer-events: none;
 }
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.gallery a {
+  margin-right: 10px;
+}
