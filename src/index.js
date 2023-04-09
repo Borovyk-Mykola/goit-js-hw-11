@@ -87,6 +87,7 @@ const onSubmitClick = async e => {
       refs.gallery.insertAdjacentHTML('beforeend', markup);
   
       pixaby.totalPages = total;
+      pixaby.page = 1;
       Notiflix.Notify.success(`Hooray! We found ${total} images.`);
   
       if (pixaby.hasMorePhotos()) {

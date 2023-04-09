@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
+const TOTAL_HITS_KEY = 'Total hits'
 
 export class Pixabay {
     key = '28194821-49041d995ecd04735d9e20d11'
@@ -21,10 +22,12 @@ export class Pixabay {
 
         const urlAXIOS = `?key=${this.key}`;
         const { data } = await axios.get(urlAXIOS, { params, });
+        localStorage.setItem(TOTAL_HITS_KEY, data.totalHits);
         return data;
     }
 
     hasMorePhotos() {
-        return this.page < Math.ceil(this.totalPages / this.per_page);
+        const freetotalHits = localStorage.getItem(TOTAL_HITS_KEY);
+        return this.page < this.totalPages / this.per_page && this.page < freetotalHits / this.per_page;
     }
 }
